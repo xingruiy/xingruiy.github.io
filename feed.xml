@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.0">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2020-11-09T07:48:53-06:00</updated><id>/feed.xml</id><title type="html">Reality Super Charged</title><subtitle>This is a private website.</subtitle><entry><title type="html">Jekyll on Synology</title><link href="/jekyll/nas/2020/11/08/jekyll-on-synology.html" rel="alternate" type="text/html" title="Jekyll on Synology" /><published>2020-11-08T00:00:00-06:00</published><updated>2020-11-08T00:00:00-06:00</updated><id>/jekyll/nas/2020/11/08/jekyll-on-synology</id><content type="html" xml:base="/jekyll/nas/2020/11/08/jekyll-on-synology.html">&lt;p&gt;I recently bought a synology NAS (network attaching device) and the first thought came into my mind is to power a jekyll site on this thing.&lt;/p&gt;
+
+&lt;p&gt;I had read some online articles on how to setup jekyll on a synology NAS but still ran into problems. The first thing I tried was to use the integrated docker solution. Docker works flawlessly on many APPs including GitLab. However whenever I ran docker with jekyll it always give me a “container unexpectedly stopped” error. I have to say the native docker APP on synology is really awkward to work with: For example, the “cmd” option is tucked away in a hidden place. As the result, I had to ssh into the NAS and ran docker directly from the commandline.&lt;/p&gt;
+
+&lt;p&gt;However, uppon doing this, the remote machine gave me an error:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;docker: Got permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This problem is simple enough to solve just by following this &lt;a href=&quot;https://www.digitalocean.com/community/questions/how-to-fix-docker-got-permission-denied-while-trying-to-connect-to-the-docker-daemon-socket&quot;&gt;LINK&lt;/a&gt;. However, the next problem is a little bit more challenging. I treid running jekyll with&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;docker --rm -it --volume=&quot;${PWD}:/srv/jekyll&quot; jekyll/jekyll jekyll new my_website
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;but got denied access because docker cannot create directories from inside the container. As a workaround I changed the permission of the current directory to allow all users accessing it, which is not ideal. After that, I was finally able to create and build my jekyll site with:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;docker --rm -it --volume=&quot;${PWD}:/srv/jekyll&quot; jekyll/jekyll jekyll build
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Note that if you remove the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;--rm&lt;/code&gt; option the container will appear in the synology docker APP later, which allows us to simply toggle it on and off from the docker station, neat! (but you have to rename it as docker gives it a random name).&lt;/p&gt;
+
+&lt;p&gt;&lt;del&gt;It is also beneficial to add another container just in case you want to add more dependencies to your website:&lt;/del&gt;&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;docker -it --volume=&quot;${PWD}:/srv/jekyll&quot; jekyll/jekyll bundler install
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;As it turned out this is the wrong way of doing this&lt;/strong&gt;: Containers are light weight virtual machines which has their own file systems. I guess the chrononical approach is to containerise every dependency you could imagine of, as docker is meant to be an easy deployment solution. The official docker page also advocates the use of two separate images: one for development and the other production.&lt;/p&gt;
+
+&lt;p&gt;As such I think I will be stucking with the “base image” for awhile before I got anytime to build my own solution.&lt;/p&gt;
+
+&lt;h1 id=&quot;reference&quot;&gt;Reference:&lt;/h1&gt;
+&lt;p&gt;[1] https://columns.chicken-house.net/2016/09/20/jekyll-on-nas/&lt;/p&gt;
+
+&lt;p&gt;[2] https://www.digitalocean.com/community/questions/how-to-fix-docker-got-permission-denied-while-trying-to-connect-to-the-docker-daemon-socket&lt;/p&gt;
+
+&lt;p&gt;[3] https://dev.to/michael/compile-a-jekyll-project-without-installing-jekyll-or-ruby-by-using-docker-4184&lt;/p&gt;</content><author><name></name></author><category term="jekyll" /><category term="NAS" /><summary type="html">I recently bought a synology NAS (network attaching device) and the first thought came into my mind is to power a jekyll site on this thing.</summary></entry><entry><title type="html">Read and Write PLY Files</title><link href="/programming/2020/11/08/read-write-ply.html" rel="alternate" type="text/html" title="Read and Write PLY Files" /><published>2020-11-08T00:00:00-06:00</published><updated>2020-11-08T00:00:00-06:00</updated><id>/programming/2020/11/08/read-write-ply</id><content type="html" xml:base="/programming/2020/11/08/read-write-ply.html">&lt;p&gt;For people who is working with 3-D just like me, occationally you would want to quickly generate some 3-D files to be viewed in external applications, such as &lt;a href=&quot;https://www.meshlab.net/&quot;&gt;MeshLab&lt;/a&gt;, PLY file is suited for this task for its simplicity.&lt;/p&gt;
+
+&lt;p&gt;Instead of using some off-the-shelf library, I prefere to write my own because 1) it is fairly easy to do and 2) 3-D data are not uniform, even off-the-shelf solutions have to be adapted.&lt;/p&gt;
+
+&lt;p&gt;PLY files follow a simple format, an example is given bellow:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ply
+format ascii 1.0
+element vertex 3
+property float x
+property float y
+property float z
+0 0 0
+0 1 0 
+1 0 0 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;It is really simple and self-explainatory. For writing PLY files, I use the following code snippet.&lt;/p&gt;
+
+&lt;div class=&quot;language-c++ highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;write_ply&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;std&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;string&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;filename&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;std&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;vector&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;float&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;points&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;num_points&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; 
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;std&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cout&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;PLY&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h1 id=&quot;references&quot;&gt;References&lt;/h1&gt;
+
+&lt;p&gt;[1] &lt;a href=&quot;https://people.math.sc.edu/Burkardt/data/ply/ply.txt&quot;&gt;https://people.math.sc.edu/Burkardt/data/ply/ply.txt&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;[2] &lt;a href=&quot;http://paulbourke.net/dataformats/ply/&quot;&gt;http://paulbourke.net/dataformats/ply/&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;[3] &lt;a href=&quot;https://en.wikipedia.org/wiki/PLY_(file_format)&quot;&gt;https://en.wikipedia.org/wiki/PLY_(file_format)&lt;/a&gt;&lt;/p&gt;</content><author><name></name></author><category term="Programming" /><summary type="html">For people who is working with 3-D just like me, occationally you would want to quickly generate some 3-D files to be viewed in external applications, such as MeshLab, PLY file is suited for this task for its simplicity.</summary></entry></feed>
