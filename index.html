@@ -294,6 +294,28 @@
             }
         }
 
+        /* 版权信息 */
+        .footer {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            color: #888;
+            font-size: 8px;
+            text-shadow: 1px 1px 0 #000;
+            z-index: 5;
+        }
+
+        .footer a {
+            color: #4ecdc4;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            color: #ff6b6b;
+        }
+
         /* 加载动画 */
         .loading-text {
             position: fixed;
@@ -359,6 +381,10 @@
             </div>
         </div>
     </div>
+
+    <footer class="footer">
+        <p>&copy; 2026 Xingrui Yang. All rights reserved.</p>
+    </footer>
 
     <script>
         // 添加打字机效果
